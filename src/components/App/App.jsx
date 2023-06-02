@@ -4,25 +4,21 @@ import ContactsList from '../ContactsList/ContactsList';
 import ContactForm from '../ContactForm/ContactForm';
 import { Container, Title, FormContainer } from './App.styled';
 import { nanoid } from 'nanoid';
+import Notiflix from 'notiflix';
 
 class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
   };
 
-  formSubmitHandler = data => {
+  addContact = data => {
     const oldContact = this.state.contacts.map(oldContact =>
       oldContact.name.toLowerCase()
     );
 
     if (oldContact.includes(data.name.toLowerCase())) {
-      return alert(`${data.name} is alredy in contacts`);
+      return Notiflix.Notify.failure(`${data.name} is alredy in contacts`);
     }
 
     const newContact = { id: nanoid(2), ...data };
@@ -30,12 +26,16 @@ class App extends Component {
     this.setState(prevState => ({
       contacts: [...prevState.contacts, newContact],
     }));
+    Notiflix.Notify.success(`${data.name} contact has been added `);
   };
 
-  deleteContact = contactId => {
+  deleteContact = (contactId, name) => {
+    console.log(name);
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
+
+    Notiflix.Notify.info(`Contact ${name}  has been deleted`);
   };
 
   changeFilter = event => {
@@ -51,6 +51,21 @@ class App extends Component {
     );
   };
 
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   render() {
     const visibleContacts = this.getVisibleContacts();
 
@@ -59,17 +74,21 @@ class App extends Component {
         <Title>PhoneBook</Title>
 
         <FormContainer>
-          <ContactForm onSubmit={this.formSubmitHandler} />
+          <ContactForm onSubmit={this.addContact} />
         </FormContainer>
 
-        <Title>Contacts</Title>
-
-        <Filter value={this.state.filter} onChange={this.changeFilter} />
-
-        <ContactsList
-          visibleContacts={visibleContacts}
-          onDelete={this.deleteContact}
-        />
+        {visibleContacts.length === 0 ? (
+          <p>Sorry,you have not contacts in phonebook!</p>
+        ) : (
+          <>
+            <Title>Contacts</Title>
+            <Filter value={this.state.filter} onChange={this.changeFilter} />
+            <ContactsList
+              visibleContacts={visibleContacts}
+              onDelete={this.deleteContact}
+            />
+          </>
+        )}
       </Container>
     );
   }

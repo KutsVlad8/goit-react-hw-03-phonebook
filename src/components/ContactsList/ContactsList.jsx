@@ -7,7 +7,10 @@ const ContactsList = ({ visibleContacts, onDelete }) => {
       {visibleContacts.map(contact => (
         <ContactListItem key={contact.id}>
           {contact.name}: {contact.number}
-          <Button type="button" onClick={() => onDelete(contact.id)}>
+          <Button
+            type="button"
+            onClick={() => onDelete(contact.id, contact.name)}
+          >
             delete
           </Button>
         </ContactListItem>
