@@ -2,7 +2,7 @@
   "name": "goit-react-hw-03-phonebook",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://KutsVlad8.io/goit-react-hw-03-phonebook/",
+  "homepage": "https://KutsVlad8.github.io/goit-react-hw-03-phonebook/",
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
