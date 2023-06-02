@@ -2,7 +2,13 @@ import { Component } from 'react';
 import Filter from 'components/Filter/Filter';
 import ContactsList from '../ContactsList/ContactsList';
 import ContactForm from '../ContactForm/ContactForm';
-import { Container, Title, FormContainer } from './App.styled';
+import {
+  Container,
+  Title,
+  Head,
+  FormContainer,
+  LeftContainer,
+} from './App.styled';
 import { nanoid } from 'nanoid';
 import Notiflix from 'notiflix';
 
@@ -70,26 +76,32 @@ class App extends Component {
     const visibleContacts = this.getVisibleContacts();
 
     return (
-      <Container>
-        <Title>PhoneBook</Title>
+      <>
+        <Head>PhoneBook</Head>
+        <Container>
+          <FormContainer>
+            <ContactForm onSubmit={this.addContact} />
+          </FormContainer>
 
-        <FormContainer>
-          <ContactForm onSubmit={this.addContact} />
-        </FormContainer>
-
-        {visibleContacts.length === 0 ? (
-          <p>Sorry,you have not contacts in phonebook!</p>
-        ) : (
-          <>
-            <Title>Contacts</Title>
-            <Filter value={this.state.filter} onChange={this.changeFilter} />
-            <ContactsList
-              visibleContacts={visibleContacts}
-              onDelete={this.deleteContact}
-            />
-          </>
-        )}
-      </Container>
+          <LeftContainer>
+            {visibleContacts.length === 0 ? (
+              <p>Sorry,you have not contacts in phonebook!</p>
+            ) : (
+              <>
+                <Title>Contacts</Title>
+                <Filter
+                  value={this.state.filter}
+                  onChange={this.changeFilter}
+                />
+                <ContactsList
+                  visibleContacts={visibleContacts}
+                  onDelete={this.deleteContact}
+                />
+              </>
+            )}
+          </LeftContainer>
+        </Container>
+      </>
     );
   }
 }
